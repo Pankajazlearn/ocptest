@@ -1,0 +1,33 @@
+# Copy this file to terraform.tfvars and update values
+# DO NOT commit terraform.tfvars to version control
+
+resource_group_name = "rg-openshift-cluster"
+location            = "eastus"
+prefix              = "openshift"
+
+# VM Configuration
+vm_count            = 3
+vm_size             = "Standard_D4s_v3"  # 4 vCPU, 16 GB RAM - good for OpenShift
+admin_username      = "azureuser"
+admin_password      = "CHANGE-ME-123456789!"  # Minimum 12 characters
+
+# Networking
+vnet_address_space  = "10.0.0.0/16"
+subnet_address_prefix = "10.0.1.0/24"
+
+# OS Image (RHEL 8 with LVM for OpenShift)
+os_publisher = "RedHat"
+os_offer     = "RHEL"
+os_sku       = "8-lvm-gen2"
+os_version   = "latest"
+
+# Disk Configuration
+disk_size_gb      = 128   # OS disk
+data_disk_size_gb = 256   # Data disk for OpenShift storage
+
+# Tags
+tags = {
+  Environment = "openshift"
+  ManagedBy   = "terraform"
+  Project     = "openshift-cluster"
+}
