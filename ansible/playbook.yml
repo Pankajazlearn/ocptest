@@ -1,0 +1,29 @@
+---
+- name: Install Apache on Azure VM
+  hosts: azure_vm
+  become: yes
+  tasks:
+    - name: Install httpd (Apache)
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Start and enable httpd
+      ansible.builtin.systemd:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Allow HTTP through firewall
+      ansible.builtin.command: firewall-cmd --permanent --add-service=http
+      changed_when: true
+
+    - name: Reload firewall
+      ansible.builtin.command: firewall-cmd --reload
+      changed_when: true
+
+    - name: Deploy index.html
+      ansible.builtin.copy:
+        content: "<h1>Hello from Apache on Azure RHEL VM!</h1>\n"
+        dest: /var/www/html/index.html
+        mode: "0644"
